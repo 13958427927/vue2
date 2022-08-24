@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .container {
+      width: 300px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .red-green-light {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+      width: 70px;
+      height: 240px;
+      background-color: #333;
+      border-radius: 5px;
+    }
+
+    .light {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: #fff;
+    }
+
+    .red-green-light .light:nth-child(1).active {
+      background-color: red;
+    }
+
+    .red-green-light .light:nth-child(2).active {
+      background-color: green;
+    }
+
+    .red-green-light .light:nth-child(3).active {
+      background-color: goldenrod;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="red-green-light">
+      <div class="light red"></div>
+      <div class="light green"></div>
+      <div class="light yellow"></div>
+    </div>
+
+  </div>
+</body>
+
+<script>
+  // 让灯亮的方法
+  const openLight = node => node.classList.add('active')
+  // 让灯灭的方法
+  const offLight = node => node.classList.remove('active')
+
+  // 等待的方法
+  const wait = (duration) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, duration)
+    })
+  }
+
+  // 单个灯的点亮与熄灭
+  const lightOpenOff = async (node, duration) => {
+    // 1. 让灯亮
+    openLight(node)
+    // 2. 灯亮持续n秒
+    await wait(duration)
+    // 3. 让灯灭
+    offLight(node)
+  }
+
+  // 灯光系统 --> 红绿蓝依次亮
+  const lightSystem = async (durationRed, durationGreen, durationYellow) => {
+    await lightOpenOff(document.querySelector('.red'), durationRed)
+    await lightOpenOff(document.querySelector('.green'), durationGreen)
+    await lightOpenOff(document.querySelector('.yellow'), durationYellow)
+  }
+
+  // 灯光系统循环, 红绿蓝灯一直循环依次亮
+  async function lightSystemLoop(durationRed, durationGreen, durationYellow) {
+    await lightSystem(...arguments)
+    lightSystemLoop(...arguments)
+  }
+
+  lightSystemLoop(3000, 2000, 1000)
+</script>
+
+</html>
